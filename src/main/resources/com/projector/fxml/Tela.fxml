@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.projector.controller.TelaController"
+           fx:id="rootPane"
+           style="-fx-background-color: black;">
+
+    <!-- Área de vídeo/conteúdo -->
+    <StackPane fx:id="mediaPane"
+               style="-fx-background-color: black;"/>
+
+    <!-- Camada de overlay (imagens sobrepostas) -->
+    <Pane fx:id="overlayPane"
+          style="-fx-background-color: transparent;"/>
+
+    <!-- Mensagem quando não há conteúdo -->
+    <Label fx:id="lblVazio"
+           text=""
+           style="-fx-text-fill: #1a1a1a; -fx-font-size: 16px;"/>
+
+</StackPane>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.projector.controller.MainController"
+            styleClass="root-pane">
+
+    <!-- ═══════ TOPO ═══════ -->
+    <top>
+        <HBox styleClass="top-bar" alignment="CENTER_LEFT" spacing="10">
+            <padding><Insets top="10" bottom="10" left="15" right="15"/></padding>
+            <Label text="ProjetorApp" styleClass="app-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="⚙ Configurações" styleClass="btn-secondary"/>
+        </HBox>
+    </top>
+
+    <!-- ═══════ CENTRO ═══════ -->
+    <center>
+        <SplitPane dividerPositions="0.65">
+
+            <!-- Área de Pré-visualização -->
+            <VBox styleClass="panel" spacing="10">
+                <padding><Insets top="15" bottom="15" left="15" right="15"/></padding>
+                <Label text="Pré-visualização" styleClass="panel-title"/>
+                <StackPane styleClass="preview-area" VBox.vgrow="ALWAYS">
+                    <Label text="Nenhuma mídia selecionada" styleClass="empty-label"/>
+                </StackPane>
+                <HBox spacing="10" alignment="CENTER">
+                    <Button fx:id="btnPlay" text="▶ Exibir no Telão" onAction="#onPlay"
+                            styleClass="btn-primary"/>
+                    <Button fx:id="btnStop" text="⏹ Parar" onAction="#onStop"
+                            styleClass="btn-danger"/>
+                </HBox>
+            </VBox>
+
+            <!-- Painel Direito -->
+            <VBox spacing="10">
+                <padding><Insets top="15" bottom="15" left="15" right="15"/></padding>
+
+                <!-- Adicionar Mídia -->
+                <Label text="Adicionar Mídia" styleClass="panel-title"/>
+                <HBox spacing="8">
+                    <TextField fx:id="txtUrl" promptText="URL do YouTube..."
+                               HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnAdd" text="+ Adicionar" onAction="#onAddMedia"
+                            styleClass="btn-primary"/>
+                </HBox>
+
+                <!-- Fila de Reprodução -->
+                <Label text="Fila de Reprodução" styleClass="panel-title"/>
+                <ListView fx:id="listPlaylist" VBox.vgrow="ALWAYS"
+                          styleClass="playlist-list"/>
+
+                <HBox spacing="8" alignment="CENTER">
+                    <Button fx:id="btnMoveUp" text="▲" onAction="#onMoveUp" styleClass="btn-secondary"/>
+                    <Button fx:id="btnMoveDown" text="▼"  onAction="#onMoveDown" styleClass="btn-secondary"/>
+                    <Button fx:id="btnRemove" text="Remover" onAction="#onRemove"
+                            styleClass="btn-danger"/>
+                </HBox>
+
+            </VBox>
+
+        </SplitPane>
+    </center>
+
+    <!-- ═══════ RODAPÉ ═══════ -->
+    <bottom>
+        <HBox styleClass="status-bar" alignment="CENTER_LEFT" spacing="10">
+            <padding><Insets top="6" bottom="6" left="15" right="15"/></padding>
+            <Label fx:id="lblStatus" text="● Aguardando..." styleClass="status-label"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
