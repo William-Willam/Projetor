@@ -13,6 +13,7 @@ public class VlcjPlayerService {
     private MediaPlayerFactory factory;
     private EmbeddedMediaPlayer mediaPlayer;
     private boolean inicializado = false;
+    private YtDlpService ytDlpService = new YtDlpService();
 
     public VlcjPlayerService() {
         try {
@@ -59,9 +60,26 @@ public class VlcjPlayerService {
      */
     public boolean reproduzir(String url) {
         if (!inicializado) return false;
+
         try {
-            mediaPlayer.media().play(url);
+            String mediaUrl = url;
+
+            // Se for YouTube, extrai a URL real via yt-dlp
+            if (ytDlpService.isYouTube(url)) {
+                System.out.println("YouTube detectado, extraindo stream...");
+                String streamUrl = ytDlpService.extrairStreamUrl(url);
+                if (streamUrl != null) {
+                    mediaUrl = streamUrl;
+                    System.out.println("Stream extraído com sucesso!");
+                } else {
+                    System.err.println("Falha ao extrair stream do YouTube.");
+                    return false;
+                }
+            }
+
+            mediaPlayer.media().play(mediaUrl);
             return true;
+
         } catch (Exception e) {
             System.err.println("Erro ao reproduzir: " + e.getMessage());
             return false;

@@ -45,10 +45,16 @@
                 <!-- Adicionar Mídia -->
                 <Label text="Adicionar Mídia" styleClass="panel-title"/>
                 <HBox spacing="8">
-                    <TextField fx:id="txtUrl" promptText="URL do YouTube..."
+                    <TextField fx:id="txtUrl" promptText="URL do YouTube ou caminho do arquivo..."
                                HBox.hgrow="ALWAYS"/>
-                    <Button fx:id="btnAdd" text="+ Adicionar" onAction="#onAddMedia"
+                    <Button fx:id="btnAdd" text="+ URL" onAction="#onAddMedia"
                             styleClass="btn-primary"/>
+                </HBox>
+                <HBox spacing="8">
+                    <Button fx:id="btnOpenFile" text="📁 Abrir Arquivo"
+                            onAction="#onOpenFile"
+                            styleClass="btn-secondary" HBox.hgrow="ALWAYS"
+                            maxWidth="Infinity"/>
                 </HBox>
 
                 <!-- Fila de Reprodução -->

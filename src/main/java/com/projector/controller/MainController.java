@@ -133,6 +133,44 @@ public class MainController {
         }
     }
 
+    @FXML
+    private void onOpenFile() {
+        // Abre o explorador de arquivos
+        javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
+        fileChooser.setTitle("Selecionar Arquivo de Mídia");
+
+        // Filtros de arquivo aceitos
+        fileChooser.getExtensionFilters().addAll(
+                new javafx.stage.FileChooser.ExtensionFilter(
+                        "Arquivos de Vídeo",
+                        "*.mp4", "*.avi", "*.mkv", "*.mov",
+                        "*.wmv", "*.flv", "*.webm", "*.ts"
+                ),
+                new javafx.stage.FileChooser.ExtensionFilter(
+                        "Todos os Arquivos", "*.*"
+                )
+        );
+
+        // Abre na pasta Vídeos do usuário por padrão
+        java.io.File pastaInicial = new java.io.File(
+                System.getProperty("user.home") + "/Videos"
+        );
+        if (pastaInicial.exists()) {
+            fileChooser.setInitialDirectory(pastaInicial);
+        }
+
+        // Obtém a janela principal para abrir o diálogo
+        javafx.stage.Stage stage = (javafx.stage.Stage)
+                btnAdd.getScene().getWindow();
+
+        java.io.File arquivo = fileChooser.showOpenDialog(stage);
+
+        if (arquivo != null) {
+            listPlaylist.getItems().add(arquivo.getAbsolutePath());
+            setStatus("Arquivo adicionado: " + arquivo.getName());
+        }
+    }
+
     // ═══════════════════════════════════
     // Utilitários
     // ═══════════════════════════════════
