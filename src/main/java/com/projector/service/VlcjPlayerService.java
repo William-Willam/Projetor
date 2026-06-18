@@ -117,4 +117,13 @@ public class VlcjPlayerService {
         if (mediaPlayer != null) mediaPlayer.release();
         if (factory != null) factory.release();
     }
+
+    /**
+     * Ajusta o volume do player (0 a 100).
+     */
+    public void setVolume(int volume) {
+        if (!inicializado) return;
+        mediaPlayer.audio().setVolume(volume);
+    }
+
 }

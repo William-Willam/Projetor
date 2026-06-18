@@ -8,19 +8,20 @@ import java.io.InputStreamReader;
  */
 public class YtDlpService {
 
-    // Caminho do yt-dlp
     private static final String YT_DLP_PATH = "D:\\Program Files\\VLC\\yt-dlp.exe";
+    private static final String DENO_PATH = "D:\\Users\\William\\.deno\\bin\\deno.exe";
 
     /**
      * Extrai a URL do melhor stream disponível para o vídeo/live.
-     * Retorna null se falhar.
      */
     public String extrairStreamUrl(String youtubeUrl) {
         try {
             ProcessBuilder pb = new ProcessBuilder(
                     YT_DLP_PATH,
-                    "-f", "best[ext=mp4]/best",  // Melhor qualidade mp4
-                    "-g",                          // Só retorna a URL, não baixa
+                    "--js-runtimes", "deno:" + DENO_PATH,
+                    "--no-update",
+                    "-f", "best[ext=mp4]/best",
+                    "-g",
                     youtubeUrl
             );
 
@@ -42,7 +43,6 @@ public class YtDlpService {
             System.out.println("[yt-dlp] Exit code: " + exitCode);
 
             if (exitCode == 0) {
-                // Retorna a primeira URL válida
                 String result = output.toString().trim();
                 String[] lines = result.split("\n");
                 for (String l : lines) {

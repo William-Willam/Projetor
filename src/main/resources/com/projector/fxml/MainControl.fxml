@@ -27,8 +27,8 @@
             <VBox styleClass="panel" spacing="10">
                 <padding><Insets top="15" bottom="15" left="15" right="15"/></padding>
                 <Label text="Pré-visualização" styleClass="panel-title"/>
-                <StackPane styleClass="preview-area" VBox.vgrow="ALWAYS">
-                    <Label text="Nenhuma mídia selecionada" styleClass="empty-label"/>
+                <StackPane fx:id="previewPane" styleClass="preview-area" VBox.vgrow="ALWAYS">
+                    <Label fx:id="lblPreview" text="Nenhuma mídia selecionada" styleClass="empty-label"/>
                 </StackPane>
                 <HBox spacing="10" alignment="CENTER">
                     <Button fx:id="btnPlay" text="▶ Exibir no Telão" onAction="#onPlay"
@@ -76,9 +76,16 @@
 
     <!-- ═══════ RODAPÉ ═══════ -->
     <bottom>
-        <HBox styleClass="status-bar" alignment="CENTER_LEFT" spacing="10">
+        <HBox styleClass="status-bar" alignment="CENTER_LEFT" spacing="15">
             <padding><Insets top="6" bottom="6" left="15" right="15"/></padding>
             <Label fx:id="lblStatus" text="● Aguardando..." styleClass="status-label"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="🔊" styleClass="status-label"/>
+            <Slider fx:id="sliderVolume"
+                    min="0" max="100" value="80"
+                    prefWidth="120"
+                    styleClass="volume-slider"/>
+            <Label fx:id="lblVolume" text="80%" styleClass="status-label"/>
         </HBox>
     </bottom>
 

@@ -138,3 +138,22 @@ TextField {
     -fx-text-fill: #4a5568;
     -fx-font-size: 11px;
 }
+
+/* ═══════════════════════════════════
+   Slider de Volume
+═══════════════════════════════════ */
+.volume-slider .track {
+    -fx-background-color: #0f3460;
+    -fx-pref-height: 4px;
+}
+
+.volume-slider .thumb {
+    -fx-background-color: #e94560;
+    -fx-pref-width: 14px;
+    -fx-pref-height: 14px;
+    -fx-background-radius: 7px;
+}
+
+.volume-slider:hover .thumb {
+    -fx-background-color: #c73652;
+}

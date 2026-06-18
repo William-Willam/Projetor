@@ -64,4 +64,12 @@ public class TelaController {
         playerService.parar();
         overlayPane.getChildren().clear();
     }
+
+    /**
+     * Ajusta o volume da reprodução.
+     */
+    public void setVolume(int volume) {
+        playerService.setVolume(volume);
+    }
+
 }

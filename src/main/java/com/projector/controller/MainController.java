@@ -1,11 +1,14 @@
 package com.projector.controller;
 
+import com.projector.service.PreviewService;
 import com.projector.view.TelaStage;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
 
 /**
  * Controller da janela principal de controle.
@@ -27,19 +30,36 @@ public class MainController {
     @FXML private TextField txtUrl;
     @FXML private ListView<String> listPlaylist;
     @FXML private Label lblStatus;
+    @FXML private Slider sliderVolume;
+    @FXML private Label lblVolume;
+    @FXML private StackPane previewPane;
+    @FXML private Label lblPreview;
+    private PreviewService previewService;
 
     private TelaStage telaStage;
 
     // ═══════════════════════════════════
     // Inicialização
     // ═══════════════════════════════════
-
-    /**
-     * Chamado automaticamente pelo JavaFX após carregar o FXML.
-     */
     @FXML
     public void initialize() {
         setStatus("Aguardando...");
+
+        previewService = new PreviewService();
+
+        // Vincula o preview após o painel estar visível
+        javafx.application.Platform.runLater(() -> {
+            previewService.vincularPainel(previewPane);
+        });
+
+        // Listener do slider de volume
+        sliderVolume.valueProperty().addListener((obs, oldVal, newVal) -> {
+            int volume = newVal.intValue();
+            lblVolume.setText(volume + "%");
+            if (telaStage != null && telaStage.estaAberto()) {
+                telaStage.getController().setVolume(volume);
+            }
+        });
     }
 
     // ═══════════════════════════════════
@@ -64,39 +84,53 @@ public class MainController {
             return;
         }
 
-        // Remove aspas se o usuário colou o caminho com aspas
         final String url = selected.replace("\"", "").trim();
+        setStatus("⏳ Extraindo stream, aguarde...");
+        btnPlay.setDisable(true);
 
-        try {
-            if (telaStage == null || !telaStage.estaAberto()) {
-                telaStage = new TelaStage();
-                telaStage.mostrar();
+        new Thread(() -> {
+            try {
+                // Se o telão não está aberto, abre primeiro
+                if (telaStage == null || !telaStage.estaAberto()) {
 
-                // Aguarda janela abrir e vínculo ser feito antes de reproduzir
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(1000); // 1 segundo para garantir o vínculo
-                        javafx.application.Platform.runLater(() -> {
-                            boolean ok = telaStage.getController().reproduzir(url);
-                            setStatus(ok ? "Reproduzindo: " + url : "Erro ao reproduzir.");
-                        });
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }).start();
+                    // Abre o telão na thread JavaFX
+                    javafx.application.Platform.runLater(() -> {
+                        try {
+                            telaStage = new TelaStage();
+                            telaStage.mostrar();
+                        } catch (Exception e) {
+                            setStatus("Erro ao abrir telão: " + e.getMessage());
+                        }
+                    });
 
-            } else {
+                    // Aguarda o telão estar pronto
+                    Thread.sleep(1500);
+                }
+
+                // Reproduz UMA única vez
                 boolean ok = telaStage.getController().reproduzir(url);
-                setStatus(ok ? "Reproduzindo: " + url : "Erro ao reproduzir.");
-            }
 
-        } catch (Exception e) {
-            setStatus("Erro: " + e.getMessage());
-        }
+                // Reproduz também no preview
+                previewService.reproduzir(url);
+
+                javafx.application.Platform.runLater(() -> {
+                    btnPlay.setDisable(false);
+                    setStatus(ok ? "Reproduzindo: " + url : "Erro ao reproduzir.");
+                });
+
+            } catch (Exception e) {
+                javafx.application.Platform.runLater(() -> {
+                    btnPlay.setDisable(false);
+                    setStatus("Erro: " + e.getMessage());
+                });
+            }
+        }).start();
     }
+
     @FXML
     private void onStop() {
         if (telaStage != null && telaStage.estaAberto()) {
+            previewService.parar();
             telaStage.getController().dispose();
             telaStage.fechar();
             telaStage = null;
@@ -135,11 +169,9 @@ public class MainController {
 
     @FXML
     private void onOpenFile() {
-        // Abre o explorador de arquivos
         javafx.stage.FileChooser fileChooser = new javafx.stage.FileChooser();
         fileChooser.setTitle("Selecionar Arquivo de Mídia");
 
-        // Filtros de arquivo aceitos
         fileChooser.getExtensionFilters().addAll(
                 new javafx.stage.FileChooser.ExtensionFilter(
                         "Arquivos de Vídeo",
@@ -151,7 +183,6 @@ public class MainController {
                 )
         );
 
-        // Abre na pasta Vídeos do usuário por padrão
         java.io.File pastaInicial = new java.io.File(
                 System.getProperty("user.home") + "/Videos"
         );
@@ -159,7 +190,6 @@ public class MainController {
             fileChooser.setInitialDirectory(pastaInicial);
         }
 
-        // Obtém a janela principal para abrir o diálogo
         javafx.stage.Stage stage = (javafx.stage.Stage)
                 btnAdd.getScene().getWindow();
 
